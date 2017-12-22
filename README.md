@@ -1,7 +1,8 @@
-# Introduction to Operating Systems Program Assignment (Fall 2017)  
+# Introduction to Operating Systems (Fall 2017)  
 National Chiao Tung University Department of Computer Science  
 Professor: Shyan Ming Yuan  
 Undergraduate course  
+Programming Assignments  
 
 ## Project_1_Linux Kernel Module - Basics  
 Duration: 2017/09/13 ~ 2017/09/29  
