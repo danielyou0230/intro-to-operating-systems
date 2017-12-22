@@ -1,1 +1,0 @@
-cmd_/home/danielyou0230/OS_hw/project2/hw2.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/danielyou0230/OS_hw/project2/hw2.ko /home/danielyou0230/OS_hw/project2/hw2.o /home/danielyou0230/OS_hw/project2/hw2.mod.o ;  true
