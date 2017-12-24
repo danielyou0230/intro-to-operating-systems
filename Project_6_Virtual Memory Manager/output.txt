@@ -1,0 +1,5 @@
+Total address translated:     6
+Total TLB Hit count     :     0
+Total Page Fault count  :     6
+TLB Hit rate   : 0.000000%
+Page Fault rate: 100.000000%
