@@ -45,8 +45,11 @@ int main(int argc, char const *argv[])
 	double pageFaultRate;
 	// open files
 	FILE *f   = fopen(argv[1], "r");  // request address list
-	FILE *log = fopen(argv[2], "w");  // output file
-	FILE *bks = fopen(argv[3], "rb"); // backing store file
+	// FILE *log = fopen(argv[2], "w");  // output file
+	// FILE *bks = fopen(argv[3], "rb"); // backing store file
+	FILE *bks = fopen(argv[2], "rb"); // backing store file
+	FILE *v_log = fopen("0310128_value.txt", "w"); // backing store file
+	FILE *a_log = fopen("0310128_address.txt", "w"); // backing store file
 	//
 	// initialize
 	for (i = 0; i < PAGE_ENTRIES; ++i) {
@@ -72,12 +75,12 @@ int main(int argc, char const *argv[])
 		}
 		// TLB hit
 		if (hit) {
-			printf("TLB Hit\n");
+			// printf("TLB Hit %*d\n", 3, tlb_hit_count);
 			++tlb_hit_count;
 		}
 		// TLB miss + page fault
 		else if (page_table[page_number].valid == false) {
-			printf("[PageFault] on request page %*d\n", 3, page_number);
+			// printf("[PageFault] on request page %*d\n", 3, page_number);
 			// load frame from backing store
 			fseek(bks, page_number * PAGE_SIZE, SEEK_SET);
 			fread(buff, sizeof(char), PAGE_SIZE, bks);
@@ -91,38 +94,50 @@ int main(int argc, char const *argv[])
 			//
 			++page_fault_count;
 			++frame;
-			// update TLB using FIFO
-			tlb_pointer = (tlb_pointer + 1) % TLB_ENTRIES;
 			// update FIFO
+			printf("Filled entry in TLB #%*d\n", 2, tlb_pointer);
 			TLB[tlb_pointer].page = page_number;
 			TLB[tlb_pointer].frame = page_table[page_number].frame;
+			// update TLB using FIFO
+			tlb_pointer = (tlb_pointer + 1) % TLB_ENTRIES;
 			// translate
 			phys_addr = page_table[page_number].frame * PAGE_SIZE + offset;
 		}
 		// only TLB miss
 		else {
-			printf("Page Table HIT\n");
+			// printf("Page Table HIT\n");
 			// translate using page table
 			phys_addr = page_table[page_number].frame * PAGE_SIZE + offset;
+			// update FIFO
+			printf("Filled entry in TLB #%*d\n", 2, tlb_pointer);
+			TLB[tlb_pointer].page = page_number;
+			TLB[tlb_pointer].frame = page_table[page_number].frame;
+			// update TLB using FIFO
+			tlb_pointer = (tlb_pointer + 1) % TLB_ENTRIES;
 		}
 		//
 		content = physicalMemory[phys_addr];
 		// 
-		printf("Virtual Address: %*d | ", 5, virt_addr);
-		printf("Page Number: %*d | Offset: %*d | ", 3, page_number, 3, offset);
-		printf("Physical Address: %*d | ", 5, phys_addr);
-		printf("Value: %*d\n", 5, content);
-		// write to file
+		//printf("Virtual Address: %*d | ", 5, virt_addr);
+		//printf("Page Number: %*d | Offset: %*d | ", 3, page_number, 3, offset);
+		//printf("Physical Address: %*d | ", 5, phys_addr);
+		//printf("Value: %*d\n", 5, content);
+		/*/ write to file
 		fprintf(log, "Virtual Address: %*d | ", 5, virt_addr);
 		fprintf(log, "Physical Address: %*d | ", 5, phys_addr);
 		fprintf(log, "Value: %*d\n", 5, content);
+		*/
+		fprintf(v_log, "%d\n", content);
+		fprintf(a_log, "%d\n", phys_addr);
 	}
 	fclose(f);
 	fclose(bks);
+	fclose(v_log);
+	fclose(a_log);
 	//
 	tlbHitRate    = 100.0 * tlb_hit_count / address_count;
 	pageFaultRate = 100.0 * page_fault_count / address_count;
-	// summary
+	/*/ summary
 	fprintf(log, "\n");
 	fprintf(log, "Total address translated: %*d\n", 5, address_count);
 	fprintf(log, "Total TLB Hit count     : %*d\n", 5, tlb_hit_count);
@@ -130,5 +145,12 @@ int main(int argc, char const *argv[])
 	fprintf(log, "TLB Hit rate   : %.2f%%\n", tlbHitRate);
 	fprintf(log, "Page Fault rate: %.2f%%\n", pageFaultRate);
 	fclose(log);
+	*/
+	printf("\n");
+	printf("Total address translated: %*d\n", 5, address_count);
+	printf("Total TLB Hit count     : %*d\n", 5, tlb_hit_count);
+	printf("Total Page Fault count  : %*d\n", 5, page_fault_count);
+	printf("TLB Hit rate   : %.2f%%\n", tlbHitRate);
+	printf("Page Fault rate: %.2f%%\n", pageFaultRate);
 	return 0;
 }
