@@ -16,7 +16,7 @@ Duration: 2017/10/06 ~ 2017/11/02
 ## Project_4_The sleeping Gymleader  
 Duration: 2017/11/19 ~ 2017/12/08  
 
-## Project_5_Bankers Algorithm  
+## Project_5_Banker's Algorithm  
 Duration: 2017/12/15 ~ 2017/12/29  
 
 ## Project_6_Virtual Memory Manager  
